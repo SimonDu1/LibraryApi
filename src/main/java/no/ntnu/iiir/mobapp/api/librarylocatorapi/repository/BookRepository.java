@@ -11,25 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class BookRepository{
+public class BookRepository {
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
-	 public JSONArray getAllBooks(){
-		 List<Book> books = new ArrayList<>();
-		 JSONArray result = new JSONArray();
-
-
-		 var sql = "select * from books";
-
-		 books = jdbcTemplate.query(sql,
-				 (rs, rowNum) -> new Book(rs.getLong("id"), rs.getString("bookisbn"))
-		 );
-		 for(int i =0; i<books.size(); i++){
-			result.put(XMLParser.parseXML("47BIBSYS_NTNU_UB",books.get(i).getIsbn()));
-		 }
-
-
-		 return result;
-	 }
+	public JSONArray getAllBooks() {
+		List<Book> books = new ArrayList<>();
+		JSONArray result = new JSONArray();
+		var sql = "select * from books";
+		books = jdbcTemplate.query(sql,
+				(rs, rowNum) -> new Book(rs.getLong("id"), rs.getString("bookisbn"))
+		);
+		for (int i = 0; i < books.size(); i++) {
+			result.put(XMLParser.parseXML("47BIBSYS_NTNU_UB", books.get(i).getIsbn()));
+		}
+		return result;
+	}
 }

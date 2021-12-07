@@ -28,6 +28,11 @@ public class BookController{
 		return book;
 	}
 
+	@GetMapping("/message")
+	public String message(){
+		return "You did it";
+	}
+
 	@GetMapping(path = "/getAllBooks", headers = "Accept=application/json; charset=UTF-8")
 	@ResponseBody
 	public String getAllBooks() throws JSONException {
