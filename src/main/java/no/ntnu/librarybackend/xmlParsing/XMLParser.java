@@ -5,9 +5,9 @@ import java.net.URL;
 import javax.xml.parsers.*;
 import java.io.*;
 
+import no.ntnu.librarybackend.model.Book;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,15 +23,20 @@ public class XMLParser {
 
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws JSONException {
         XMLParser parser = new XMLParser();
         String isbn = "978-82-489-2327-5";
-        String newHei = "978-82-7900-843-9";
+        String newHei = "9781852330897";
         bookdetail.put(parser.parseXML("47BIBSYS_NTNU_UB", newHei));
+
+        for (int i = 0; i <bookdetail.length(); i++) {
+            System.out.println(bookdetail.get(i));
+        }
+
     }
 
-    public static JSONObject parseXML(String librarySystem, String isbn) {
-        JSONObject book = new JSONObject();
+    public static Book parseXML(String librarySystem, String isbn) {
+        Book book = null;
         try {
             String title = "";
             String author = "";
@@ -62,7 +67,11 @@ public class XMLParser {
                             title += subfieldelement.getTextContent();
                         }
                         if (subfieldCode.equals("c")){
-                            author = subfieldelement.getTextContent();
+                            author = subfieldelement.getTextContent().split(";")[0];
+                            if(author.startsWith("av ")){
+                                author = author.substring(3,author.length());
+                            }
+
                         }
                     }
                 }
@@ -79,30 +88,27 @@ public class XMLParser {
                     }
                 }
                 //Get Image
-                if (datafieldnode.getAttributes().item(2).getNodeValue().equals("856") && datafieldnode.getAttributes().item(1).getNodeValue().equals("1")){
+                if (datafieldnode.getAttributes().item(2).getNodeValue().equals("856") && datafieldnode.getAttributes().item(1).getNodeValue().equals("2")){
                     for(int i = 0; i < subfieldnl.getLength(); i++){
                         Node subfieldnode = subfieldnl.item(i);
                         Element subfieldelement = (Element) subfieldnode;
+                        String subfieldname =  subfieldelement.getFirstChild().getNodeValue();
                         String subfieldCode = String.valueOf(subfieldnode.getAttributes().item(0).getNodeValue());
-                        if (subfieldCode.equals("u")){
+                        if(subfieldCode.equals("u") && subfieldname.contains("/images/")){
                             if(image.isEmpty()){
                                 image = subfieldelement.getTextContent();
                             }
+
                         }
                     }
                 }
 
 
             }
-            book.put("Title",title);
-            book.put("Author",author);
-            book.put("Summary",summary);
-            book.put("Image",image);
-
-        } catch (IOException | ParserConfigurationException | SAXException  | JSONException e) {
+            book = new Book(isbn,title,author,summary,image);
+        } catch (IOException | ParserConfigurationException | SAXException e) {
             System.out.println(e.getMessage());
         }
         return book;
     }
-
 }
