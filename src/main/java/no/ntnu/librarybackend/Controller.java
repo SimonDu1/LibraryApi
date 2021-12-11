@@ -37,12 +37,13 @@ public class Controller {
 		books = bookRepository.getAllBooks();
 		return books;
 	}
+
 	/**
 	 * Gets search result from API, searching for author, title, and ISBN.
 	 * @param query search query
 	 * @return search result
 	 */
-	@GetMapping(path = "/search={query}")
+	@GetMapping(path = "/search={query}", headers = "Accept=application/json; charset=UTF-8")
 	@ResponseBody
 	public Map<String, Book> search(@PathVariable(value = "query") String query) {
 		HashMap<String, Book> result = new HashMap<>();
@@ -65,12 +66,12 @@ public class Controller {
 	 * @return search result
 	 */
 	private Map<String, Book> searchForBooksByTitle(String query) {
-		HashMap<String, Book> result = new HashMap<String, Book>();
+		HashMap<String, Book> result = new HashMap<>();
 		Collection<Book> allBooks = bookRepository.getAllBooks().values();
 
 		for (Book book : allBooks) {
-			if (book.getTitle().contains(query)) {
-				result.put(book.getTitle(), book);
+			if (book.getTitle().toLowerCase().contains(query.toLowerCase())) {
+				result.put(book.getIsbn(), book);
 			}
 		}
 
@@ -87,8 +88,8 @@ public class Controller {
 		Collection<Book> allBooks = bookRepository.getAllBooks().values();
 
 		for (Book book : allBooks) {
-			if (book.getAuthor().contains(query)) {
-				result.put(book.getTitle(), book);
+			if (book.getAuthor().toLowerCase().contains(query.toLowerCase())) {
+				result.put(book.getIsbn(), book);
 			}
 		}
 
@@ -98,6 +99,5 @@ public class Controller {
 	private Book findBooksByIsbn(String isbn) {
 		return bookRepository.getAllBooks().get(isbn);
 	}
-
 
 }
