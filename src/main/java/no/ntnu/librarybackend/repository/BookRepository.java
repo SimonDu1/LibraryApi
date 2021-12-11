@@ -3,12 +3,8 @@ package no.ntnu.librarybackend.repository;
 import no.ntnu.librarybackend.model.Book;
 import no.ntnu.librarybackend.xmlParsing.XMLParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
