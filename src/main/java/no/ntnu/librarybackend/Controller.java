@@ -11,6 +11,11 @@ public class Controller {
 		return "HELLO WORLD";
 	}
 
+	@GetMapping("/message")
+	public String message(){
+		return "You did it";
+	}
+
 
 
 }
